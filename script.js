@@ -1,16 +1,18 @@
 const items = [
-    { id: 'wings', name: 'Wings', src: 'wings.png', type: 'wings' },
-    { id: 'horn', name: 'Horn', src: 'horn.png', type: 'horn' },
+    { id: 'wings', name: 'Fairy Wings', src: 'wings.png', type: 'wings' },
+    { id: 'horn', name: 'Unicorn Horn', src: 'horn.png', type: 'horn' },
     { id: 'hat', name: 'Wizard Hat', src: 'hat.png', type: 'hat' },
-    { id: 'scarf', name: 'Scarf', src: 'scarf.png', type: 'scarf' },
-    { id: 'socks', name: 'Socks', src: 'socks.png', type: 'socks' },
+    { id: 'amulet', name: 'Magic Amulet', src: 'amulet.png', type: 'scarf' },
+    { id: 'boots', name: 'Star Boots', src: 'boots.png', type: 'socks' },
 ];
 
 const ponyStage = document.getElementById('pony-stage');
 const inventoryItemsContainer = document.getElementById('inventory-items');
+const removeAllBtn = document.getElementById('remove-all-btn');
+const emptyMessage = document.getElementById('empty-inventory-message');
 
 // State to track what the pony is wearing
-const ponyWardrobe = {};
+let ponyWardrobe = {};
 
 function toggleItem(item) {
     const isEquipped = !!ponyWardrobe[item.type];
@@ -44,8 +46,23 @@ function toggleItem(item) {
     };
 }
 
+function removeAllItems() {
+    for (const type in ponyWardrobe) {
+        if (Object.hasOwnProperty.call(ponyWardrobe, type)) {
+            ponyWardrobe[type].element.remove();
+            ponyWardrobe[type].inventoryButton.classList.remove('equipped');
+        }
+    }
+    ponyWardrobe = {};
+}
 
 function createInventory() {
+    if (items.length > 0 && emptyMessage) {
+        emptyMessage.style.display = 'none';
+    } else if (emptyMessage) {
+        emptyMessage.style.display = 'block';
+    }
+
     items.forEach(item => {
         const itemDiv = document.createElement('div');
         itemDiv.classList.add('inventory-item');
@@ -61,8 +78,11 @@ function createInventory() {
         itemDiv.addEventListener('click', () => toggleItem(item));
         inventoryItemsContainer.appendChild(itemDiv);
     });
+
+    if (removeAllBtn) {
+        removeAllBtn.addEventListener('click', removeAllItems);
+    }
 }
 
 // Initialize the game
 createInventory();
-
